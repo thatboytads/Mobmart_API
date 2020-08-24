@@ -136,7 +136,7 @@ public class parCell {
             writer1.close();
             BufferedWriter writer = new BufferedWriter(new FileWriter(file1, true));
 
-           // writer.write(Integer.toString(plz.getValsOut()));
+           writer.write(Integer.toString(valsOut));
             writer.newLine();
             for (int k=0; k<valsOut;k++){
                 writer.write(letsgo[k]);
