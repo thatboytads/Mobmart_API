@@ -9,6 +9,18 @@ public class parCell {
 
     static  String []textGridOut;
     static  int valsOut= 0;
+    static long startTime = 0;
+    private static void tick(){
+        startTime = System.currentTimeMillis();
+    }
+    private static float tock(){
+        return (System.currentTimeMillis() - startTime) / 1000.0f;
+    }
+    static final ForkJoinPool fjPool = new ForkJoinPool();
+    static String[] para(Float [][] textGrid1,int row1){
+        return fjPool.invoke(new parallel(textGrid1,0,row1));
+    }
+
     public static void main( String [] args )
     {
 
@@ -46,7 +58,7 @@ public class parCell {
             sc.close();
             int val;
             parallel seq= new parallel(textGrid,0,row);
-
+            tick();
             for (int i=0; i<row;i++){
                 for (int j=0; j<col;j++){
 
@@ -56,17 +68,10 @@ public class parCell {
                 }
 
 
+
             }
-            parallel plz= new parallel(textGrid,0,row);
-            System.out.println(plz.valsOut);
-            ForkJoinPool fjPool = new ForkJoinPool(1);
-          String [] letsgo=   fjPool.commonPool().invoke(new parallel(textGrid,0,row));
-            fjPool.shutdown();
-
-          //  for (int k=0; k<valsOut;k++){
-
-            //    System.out.println(letsgo[k]);
-            //}
+            Float time= tock();
+            System.out.println("Sequential time is: "+ time+" Seconds");
 
         }catch (FileNotFoundException e){
             e.printStackTrace();
@@ -102,6 +107,19 @@ public class parCell {
         catch(IOException e) {
             e.printStackTrace();
         }
+        parallel plz= new parallel(textGrid,0,row);
+        System.out.println(plz.valsOut);
+
+        tick();
+        String [] letsgo=  para(textGrid,row) ;
+        Float time= tock();
+        System.out.println("Sequential time is: "+ time+" Seconds");
+        //fjPool.shutdown();
+
+        //  for (int k=0; k<valsOut;k++){
+
+        //    System.out.println(letsgo[k]);
+        //}
 
 
     }

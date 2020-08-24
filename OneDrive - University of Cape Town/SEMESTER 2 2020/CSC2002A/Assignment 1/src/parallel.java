@@ -87,7 +87,7 @@ public class parallel extends RecursiveTask<String []> {
 
             subtaskA.fork();
            String [] textOut1= subtaskB.compute();
-           String [] textOut2= subtaskB.join();
+           String [] textOut2= subtaskA.join();
 
             List list = new ArrayList(Arrays.asList(textOut1));
             list.addAll(Arrays.asList(textOut2));
