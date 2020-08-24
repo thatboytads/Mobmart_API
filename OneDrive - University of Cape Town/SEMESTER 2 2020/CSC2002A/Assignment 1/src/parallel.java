@@ -1,24 +1,23 @@
-import java.util.concurrent.ForkJoinPool;
+
 import java.util.concurrent.RecursiveTask;
-import java.util.stream.Stream;
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.List;
+
+
 public class parallel extends RecursiveTask<String []> {
-    final int seqThreshold = 500;
-    int valsOut= 0;
-    String []textGridOut;
-    Float[][] data;
-    int start, end;
+    private final int seqThreshold = 600;
+    private int valsOut= 0;
+    static  String []textGridFinal;
+    private Float[][] data;
+    private int start, end;
 
 
-    parallel(Float[][] data, int start, int end){
+    parallel(Float[][] data,String[] textGridO, int start, int end){
         this.data = data;
         this.start = start;
         this.end = end;
+     this.textGridFinal = textGridO;
     }
 
-    public void basinFind( int i,int j){
+    private void basinFind( String[] textGridO,int i,int j){
 
 
         if (( i>0) && (i <(end-1)) && (j>0) && (j<(end-1))){
@@ -43,10 +42,11 @@ public class parallel extends RecursiveTask<String []> {
                 Float diff8= num8-basin;
 
                 if ((diff1> 0.01) && (diff2> 0.01) &&(diff3> 0.01) &&(diff4> 0.01) &&(diff5> 0.01) &&(diff6> 0.01) &&(diff7> 0.01) &&(diff8> 0.01) ){
-                    textGridOut= new String[end];
-                    textGridOut[valsOut]= Integer.toString(i)+ " "+ Integer.toString(j);
-                    System.out.println(textGridOut[valsOut]);
+
+                    textGridO[valsOut]= Integer.toString(i)+ " "+ Integer.toString(j);
+
                     valsOut= valsOut+1;
+
 
 
                 }
@@ -55,46 +55,42 @@ public class parallel extends RecursiveTask<String []> {
         }
 
     }
-    public int getValsOut(int valsO){
-        valsO= this.valsOut;
-        return valsO;
+    public int getValsOut(){
+
+        return  this.valsOut;
     }
 
 
-    public String[] getTextGridOut(String[] Textgr) {
-        Textgr= this.textGridOut;
-        return Textgr;
-    }
+
+
 
     protected String[] compute()
     {
 
-        textGridOut= new String[end];
+        String []textGridOut1= new String[end];
 
         if ((end - start) < seqThreshold) {
-            for (int i = start; i < end; i++){
-                for (int j = start; j < end; j++){
-                    basinFind(i,j);
+            for (int i = start; i < end; i++) {
+                for (int j = start; j < end; j++) {
+                    basinFind(textGridOut1,i, j);
                 }
-
-                ;}
+            }
+            return textGridOut1;
         }
         else {
             int middle = (start + end) / 2;
 
-            parallel subtaskA = new parallel(data, start, middle);
-            parallel subtaskB = new parallel(data, middle, end);
+            parallel subtaskA = new parallel(data,textGridFinal, start, middle);
+            parallel subtaskB = new parallel(data,textGridFinal, middle, end);
 
             subtaskA.fork();
-           String [] textOut1= subtaskB.compute();
-           String [] textOut2= subtaskA.join();
+            subtaskB.compute();
+           subtaskA.join();
 
-            List list = new ArrayList(Arrays.asList(textOut1));
-            list.addAll(Arrays.asList(textOut2));
 
-            list.toArray(textGridOut);
 
         }
-        return textGridOut;
+        return textGridFinal;
     }
+
 }

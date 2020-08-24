@@ -18,7 +18,7 @@ public class parCell {
     }
     static final ForkJoinPool fjPool = new ForkJoinPool();
     static String[] para(Float [][] textGrid1,int row1){
-        return fjPool.invoke(new parallel(textGrid1,0,row1));
+        return fjPool.invoke(new parallel(textGrid1,textGridOut,0,row1));
     }
 
     public static void main( String [] args )
@@ -32,7 +32,7 @@ public class parCell {
 
 
         try{
-            File file= new File("./med_in.txt");
+            File file= new File("./large_in.txt");
             Scanner sc= new Scanner(file);
             String firstLine = sc.nextLine();
             String[] lineSplit= firstLine.split(" ");
@@ -57,7 +57,7 @@ public class parCell {
             }
             sc.close();
             int val;
-            parallel seq= new parallel(textGrid,0,row);
+
             tick();
             for (int i=0; i<row;i++){
                 for (int j=0; j<col;j++){
@@ -107,19 +107,51 @@ public class parCell {
         catch(IOException e) {
             e.printStackTrace();
         }
-        parallel plz= new parallel(textGrid,0,row);
-        System.out.println(plz.valsOut);
+
+
 
         tick();
         String [] letsgo=  para(textGrid,row) ;
         Float time= tock();
-        System.out.println("Sequential time is: "+ time+" Seconds");
+        System.out.println("parallel time is: "+ time+" Seconds");
         //fjPool.shutdown();
 
-        //  for (int k=0; k<valsOut;k++){
 
-        //    System.out.println(letsgo[k]);
-        //}
+        try{
+
+
+            File file1 = new File("./Large_parallel_out.txt");
+
+            //Create the file
+            if (file1.createNewFile())
+            {
+                System.out.println("File is created!");
+            } else {
+                System.out.println("File already exists.");
+            }
+
+            //Write Content
+            PrintWriter writer1 = new PrintWriter(file1);
+            writer1.print("");
+            writer1.close();
+            BufferedWriter writer = new BufferedWriter(new FileWriter(file1, true));
+
+           // writer.write(Integer.toString(plz.getValsOut()));
+            writer.newLine();
+            for (int k=0; k<valsOut;k++){
+                writer.write(letsgo[k]);
+                writer.newLine();
+
+            }
+            //for (int k=0; k<plz.getValsOut();k++){
+             //
+            //}
+
+            writer.close();
+        }
+        catch(IOException e) {
+            e.printStackTrace();
+        }
 
 
     }
