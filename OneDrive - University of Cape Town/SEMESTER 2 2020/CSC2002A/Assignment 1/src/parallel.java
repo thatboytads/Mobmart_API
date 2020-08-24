@@ -55,10 +55,7 @@ public class parallel extends RecursiveTask<String []> {
         }
 
     }
-    public int getValsOut(){
 
-        return  this.valsOut;
-    }
 
 
 

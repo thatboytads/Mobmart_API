@@ -32,7 +32,7 @@ public class parCell {
 
 
         try{
-            File file= new File("./large_in.txt");
+            File file= new File(args[0]);
             Scanner sc= new Scanner(file);
             String firstLine = sc.nextLine();
             String[] lineSplit= firstLine.split(" ");
@@ -77,36 +77,36 @@ public class parCell {
             e.printStackTrace();
 
         }
-        try{
+      //  try{
 
 
-            File file1 = new File("./Large_out.txt");
+        //    File file1 = new File(args[1]);
 
             //Create the file
-            if (file1.createNewFile())
-            {
-                System.out.println("File is created!");
-            } else {
-                System.out.println("File already exists.");
-            }
+      //      if (file1.createNewFile())
+        //    {
+            //    System.out.println("File is created!");
+          //  } else {
+             //   System.out.println("File already exists.");
+            //}
 
             //Write Content
-            PrintWriter writer1 = new PrintWriter(file1);
-            writer1.print("");
-            writer1.close();
-            BufferedWriter writer = new BufferedWriter(new FileWriter(file1, true));
-            writer.write(Integer.toString(valsOut));
-            writer.newLine();
-            for (int k=0; k<valsOut;k++){
-                writer.write(textGridOut[k]);
-                writer.newLine();
-            }
-
-            writer.close();
-        }
-        catch(IOException e) {
-            e.printStackTrace();
-        }
+            //PrintWriter writer1 = new PrintWriter(file1);
+            //writer1.print("");
+        //    writer1.close();
+       //     BufferedWriter writer = new BufferedWriter(new FileWriter(file1, true));
+        //    writer.write(Integer.toString(valsOut));
+       //     writer.newLine();
+        //    for (int k=0; k<valsOut;k++){
+      //          writer.write(textGridOut[k]);
+       //         writer.newLine();
+       //     }
+//
+      //      writer.close();
+    //    }
+   //     catch(IOException e) {
+   //         e.printStackTrace();
+    //    }
 
 
 
@@ -120,7 +120,7 @@ public class parCell {
         try{
 
 
-            File file1 = new File("./Large_parallel_out.txt");
+            File file1 = new File(args[1]);
 
             //Create the file
             if (file1.createNewFile())
