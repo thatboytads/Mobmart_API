@@ -13,17 +13,25 @@ all:
 clean:
 	rm ${BINDIR}*.class
 
-runAVL1:
+run1:
 	java -cp bin/ parCell
 
-runAVL2:
+run2:
 	java -cp bin/ parcCell m
 
-runBST1:
+run3:
 	java -cp bin/ parallel
 
-runBST2:
+run4:
 	java -cp bin/ parallel m
+
+
+run5:
+	java -cp bin/ seqCell
+
+run6:
+	java -cp bin/ seqCell m
+
 
 docs:
 	javadoc -d docs/ src/*.java

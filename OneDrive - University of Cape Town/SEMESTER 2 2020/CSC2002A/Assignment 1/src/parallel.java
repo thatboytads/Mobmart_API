@@ -74,7 +74,7 @@ public class parallel extends RecursiveTask<String []> {
 
     /**
      * compute method for recursive task, returns a string array which stores our basin
-     * @return
+     * @return an array of strings
      */
     protected String[] compute()
     {

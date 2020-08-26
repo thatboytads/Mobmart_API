@@ -9,6 +9,10 @@ public class seqCell {
     static  String []textGridOut;
     static  int valsOut= 0;
     static long startTime = 0;
+
+    /**
+     * tick and tock methods used to record the speed of findind basin
+     */
     private static void tick(){
         startTime = System.currentTimeMillis();
     }
@@ -16,10 +20,17 @@ public class seqCell {
         return (System.currentTimeMillis() - startTime) / 1000.0f;
     }
 
-
+    /**
+     * runs the program
+     * @param args
+     */
     public static void main( String [] args )
     {
-
+        /**
+         * first try and catch section  extracts the textfile contents
+         * puts the textfile contents into a 2D float array
+         *
+         */
         int x=0;
         int y= 0;
 
@@ -79,7 +90,7 @@ public class seqCell {
         try{
 
             /**
-             * creates parallel times textfile
+             * creates sequential times textfile
              */
             File file2 = new File("Sequential times.txt");
 
@@ -124,7 +135,9 @@ public class seqCell {
            System.out.println("File already exists.");
         }
 
-        //Write Content
+              /**
+               * Write Content of output array to textfile
+               */
         PrintWriter writer1 = new PrintWriter(file1);
         writer1.print("");
             writer1.close();

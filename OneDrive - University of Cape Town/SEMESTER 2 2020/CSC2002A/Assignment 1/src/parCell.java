@@ -13,6 +13,9 @@ public class parCell {
     static  int valsOut= 0;
     static  int valsOut1= 0;
     static long startTime = 0;
+    /**
+     * tick and tock methods used to record the speed of findind basin
+     */
     private static void tick(){
         startTime = System.currentTimeMillis();
     }
@@ -20,19 +23,27 @@ public class parCell {
         return (System.currentTimeMillis() - startTime) / 1000.0f;
     }
     static final ForkJoinPool fjPool = new ForkJoinPool();
+
+    /**
+     * forkjoin initialization
+     * @param textGrid1
+     * @param row1
+     * @param col1
+     * @return
+     */
     static String[] para(Float [][] textGrid1,int row1,int col1){
         return fjPool.invoke(new parallel(textGrid1,basinGridPara,0,row1,col1,0));
     }
     /**
      *
      * @param args
-     * @throws FileNotFoundException
+     *
      */
     public static void main( String [] args )
 
     {
         /**
-         * first try section extracts extracts the textfile contents
+         * first try and catch section  extracts the textfile contents
          * puts the textfile contents into a 2D float array
          *
          */
@@ -186,10 +197,6 @@ public class parCell {
 
     }
 
-    /**
-     * takes in one element of 2d array data and if value is basin stores it in a one dimension string array
-     * @param i
-     * @param j
-     */
+
 
 }
