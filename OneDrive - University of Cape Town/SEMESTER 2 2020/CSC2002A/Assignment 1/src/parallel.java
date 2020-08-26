@@ -1,35 +1,50 @@
 
 import java.util.concurrent.RecursiveTask;
-
+import java.lang.Math;
 
 public class parallel extends RecursiveTask<String []> {
-    private final int seqThreshold = 600;
+    private final int seqThreshold = 512;
     private int valsOut= 0;
     static  String []textGridFinal;
     private Float[][] data;
-    private int start, end;
+    private  int start, row,col,divnum;
 
-
-    parallel(Float[][] data,String[] textGridO, int start, int end){
+    /**
+     * instantiates the objecy
+     * @param data
+     * @param textGridO
+     * @param start
+     * @param col
+     * @param row
+     */
+    parallel(Float[][] data,String[] textGridO, int start, int col, int row,int divNum){
         this.data = data;
         this.start = start;
-        this.end = end;
+        this.col = col;
+        this.row= row;
+        this.divnum= divNum;
      this.textGridFinal = textGridO;
     }
 
-    private void basinFind( String[] textGridO,int i,int j){
+    /**
+     * takes in one element of 2d array data and if value is basin stores it in a one dimension string array
+     * @param textGridO
+     * @param i
+     * @param j
+     */
+    private void basinFind(Float[][] dataOut, String[] textGridO,int i,int j){
 
 
-        if (( i>0) && (i <(end-1)) && (j>0) && (j<(end-1))){
-            Float basin= data[i][j];
-            Float num1=  data[i][j+1];
-            Float num2= data[i+1][j];
-            Float num3= data[i][j-1];
-            Float num4= data[i-1][j];
-            Float num5= data[i+1][j+1];
-            Float num6= data[i-1][j-1];
-            Float num7= data[i-1][j+1];
-            Float num8= data[i+1][j-1];
+        if (( i>0) && (i <(row)) && (j>0) && (j<(col))){
+            Float basin= dataOut[i][j];
+            Float num1=  dataOut[i][j+1];
+            Float num2= dataOut[i+1][j];
+            Float num3= dataOut[i][j-1];
+            Float num4= dataOut[i-1][j];
+            Float num5= dataOut[i+1][j+1];
+            Float num6= dataOut[i-1][j-1];
+            Float num7= dataOut[i-1][j+1];
+            Float num8= dataOut[i+1][j-1];
 
             if ((num1>basin)&& (num2>basin)&&(num3>basin)&&(num4>basin)&&(num5>basin)&&(num6>basin)&&(num7>basin)&&(num8>basin)){
                 Float diff1= num1 - basin;
@@ -57,28 +72,32 @@ public class parallel extends RecursiveTask<String []> {
     }
 
 
-
-
-
-
+    /**
+     * compute method for recursive task, returns a string array which stores our basin
+     * @return
+     */
     protected String[] compute()
     {
-
+        int end= row;
         String []textGridOut1= new String[end];
+        if (row <col){
+             end= col;
+        }
 
-        if ((end - start) < seqThreshold) {
-            for (int i = start; i < end; i++) {
-                for (int j = start; j < end; j++) {
-                    basinFind(textGridOut1,i, j);
+        if ((end/Math.pow( 2,divnum)- start) < seqThreshold) {
+            for (int i = 1; i < end-1; i++) {
+                for (int j = 1; j < end-1; j++) {
+                    basinFind(data,textGridFinal,i, j);
                 }
             }
-            return textGridOut1;
+           return textGridFinal;
         }
         else {
-            int middle = (start + end) / 2;
+            divnum=divnum+1;
+            int middle = ( end+start) / 2;
 
-            parallel subtaskA = new parallel(data,textGridFinal, start, middle);
-            parallel subtaskB = new parallel(data,textGridFinal, middle, end);
+            parallel subtaskA = new parallel(data,textGridFinal, start, middle,end,divnum);
+            parallel subtaskB = new parallel(data,textGridFinal, middle, end,end,divnum);
 
             subtaskA.fork();
             subtaskB.compute();

@@ -3,12 +3,15 @@ import java.util.Scanner;
 import java.util.concurrent.ForkJoinPool;
 
 public class parCell {
+
     static Float [][] textGrid;
     static int row, col;
 
 
-    static  String []textGridOut;
+    static  String []basinGridOut;
+    static  String []basinGridPara;
     static  int valsOut= 0;
+    static  int valsOut1= 0;
     static long startTime = 0;
     private static void tick(){
         startTime = System.currentTimeMillis();
@@ -17,17 +20,27 @@ public class parCell {
         return (System.currentTimeMillis() - startTime) / 1000.0f;
     }
     static final ForkJoinPool fjPool = new ForkJoinPool();
-    static String[] para(Float [][] textGrid1,int row1){
-        return fjPool.invoke(new parallel(textGrid1,textGridOut,0,row1));
+    static String[] para(Float [][] textGrid1,int row1,int col1){
+        return fjPool.invoke(new parallel(textGrid1,basinGridPara,0,row1,col1,0));
     }
-
+    /**
+     *
+     * @param args
+     * @throws FileNotFoundException
+     */
     public static void main( String [] args )
+
     {
+        /**
+         * first try section extracts extracts the textfile contents
+         * puts the textfile contents into a 2D float array
+         *
+         */
 
         int x=0;
         int y= 0;
 
-        Float [] vals;
+
 
 
 
@@ -39,8 +52,9 @@ public class parCell {
             col=Integer.parseInt(lineSplit[0]) ;
              row= Integer.parseInt(lineSplit[1]) ;
             textGrid= new Float[col][row];
-            vals= new Float[col*row];
-            textGridOut= new String[col];
+
+            basinGridOut= new String[col];
+            basinGridPara= new String[col];
 
 
 
@@ -56,70 +70,83 @@ public class parCell {
 
             }
             sc.close();
-            int val;
 
-            tick();
-            for (int i=0; i<row;i++){
-                for (int j=0; j<col;j++){
-
-                    basinFind(i,j);
-
-
-                }
-
-
-
-            }
-            Float time= tock();
-            System.out.println("Sequential time is: "+ time+" Seconds");
 
         }catch (FileNotFoundException e){
             e.printStackTrace();
 
         }
-      //  try{
 
 
-        //    File file1 = new File(args[1]);
+        /**
+         * initializes the parallel code and times how long it takes to find basins. This is done 20 times across 3 different textfiles to compare times
+         */
 
-            //Create the file
-      //      if (file1.createNewFile())
-        //    {
-            //    System.out.println("File is created!");
-          //  } else {
-             //   System.out.println("File already exists.");
-            //}
+        String [] paraBasin=  para(textGrid,row,col) ;
+        for (int i= 0; i< 20;i++){
 
-            //Write Content
-            //PrintWriter writer1 = new PrintWriter(file1);
-            //writer1.print("");
-        //    writer1.close();
-       //     BufferedWriter writer = new BufferedWriter(new FileWriter(file1, true));
-        //    writer.write(Integer.toString(valsOut));
-       //     writer.newLine();
-        //    for (int k=0; k<valsOut;k++){
-      //          writer.write(textGridOut[k]);
-       //         writer.newLine();
-       //     }
-//
-      //      writer.close();
-    //    }
-   //     catch(IOException e) {
-   //         e.printStackTrace();
-    //    }
+            tick();
+            String [] paraBasin1=  para(textGrid,row,col) ;
+
+            Float time= tock();
+            System.out.println("parallel time is: "+ time+" "+i+" Seconds");
+            try{
+
+                /**
+                 * creates parallel times textfile
+                 */
+                File file2 = new File("Parallel times.txt");
+
+                //Create the file
+                if (file2.createNewFile())
+                {
+                    System.out.println("File is created!");
+                } else {
+                    System.out.println("File already exists.");
+                }
+
+                /**
+                 * Write recorded times to textfile
+                 */
 
 
 
-        tick();
-        String [] letsgo=  para(textGrid,row) ;
-        Float time= tock();
-        System.out.println("parallel time is: "+ time+" Seconds");
+                BufferedWriter writer = new BufferedWriter(new FileWriter(file2, true));
+
+                writer.write(  Float.toString(time));
+                writer.newLine();
+
+                //for (int k=0; k<plz.getValsOut();k++){
+                //
+                //}
+
+                writer.close();
+            }
+            catch(IOException e) {
+                e.printStackTrace();
+            }
+
+
+
+        }
+
+        int numBasins= 0;
         //fjPool.shutdown();
 
 
+        for (int k=0; k<paraBasin.length;k++){
+
+            if (paraBasin[k]!= null){
+                numBasins= numBasins+1;
+            }
+
+        }
+
         try{
 
-
+            /**
+             * creates basin output textfile if file does not exist
+             */
             File file1 = new File(args[1]);
 
             //Create the file
@@ -130,16 +157,19 @@ public class parCell {
                 System.out.println("File already exists.");
             }
 
-            //Write Content
+            /**
+             * Write Content from basin array to textfile
+             */
+
             PrintWriter writer1 = new PrintWriter(file1);
             writer1.print("");
             writer1.close();
             BufferedWriter writer = new BufferedWriter(new FileWriter(file1, true));
 
-           writer.write(Integer.toString(valsOut));
+           writer.write(Integer.toString(numBasins));
             writer.newLine();
-            for (int k=0; k<valsOut;k++){
-                writer.write(letsgo[k]);
+            for (int k=0; k<numBasins;k++){
+                writer.write(paraBasin[k]);
                 writer.newLine();
 
             }
@@ -155,40 +185,11 @@ public class parCell {
 
 
     }
-    public static void basinFind(int i,int j){
 
+    /**
+     * takes in one element of 2d array data and if value is basin stores it in a one dimension string array
+     * @param i
+     * @param j
+     */
 
-        if (( i>0) && (i <(row-1)) && (j>0) && (j<(col-1))){
-            Float basin= textGrid[i][j];
-            Float num1=  textGrid[i][j+1];
-            Float num2= textGrid[i+1][j];
-            Float num3= textGrid[i][j-1];
-            Float num4= textGrid[i-1][j];
-            Float num5= textGrid[i+1][j+1];
-            Float num6= textGrid[i-1][j-1];
-            Float num7= textGrid[i-1][j+1];
-            Float num8= textGrid[i+1][j-1];
-
-            if ((num1>basin)&& (num2>basin)&&(num3>basin)&&(num4>basin)&&(num5>basin)&&(num6>basin)&&(num7>basin)&&(num8>basin)){
-                Float diff1= num1 - basin;
-                Float diff2= num2- basin;
-                Float diff3= num3 -basin;
-                Float diff4= num4-basin;
-                Float diff5= num5-basin;
-                Float diff6= num6-basin;
-                Float diff7= num7-basin;
-                Float diff8= num8-basin;
-
-                if ((diff1> 0.01) && (diff2> 0.01) &&(diff3> 0.01) &&(diff4> 0.01) &&(diff5> 0.01) &&(diff6> 0.01) &&(diff7> 0.01) &&(diff8> 0.01) ){
-                    textGridOut[valsOut]= Integer.toString(i)+ " "+ Integer.toString(j);
-
-                    valsOut= valsOut+1;
-
-
-                }
-
-            }
-        }
-
-    }
 }
