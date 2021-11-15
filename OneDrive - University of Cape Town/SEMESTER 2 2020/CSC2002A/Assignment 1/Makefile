@@ -17,7 +17,7 @@ run1:
 	java -cp bin/ parCell
 
 run2:
-	java -cp bin/ parcCell m
+	java -cp bin/ parcCell large_in.txt large_out.txt
 
 run3:
 	java -cp bin/ parallel
@@ -27,7 +27,7 @@ run4:
 
 
 run5:
-	java -cp bin/ seqCell
+	java -cp bin/ seqCell large_in.txt large_out.txt
 
 run6:
 	java -cp bin/ seqCell m

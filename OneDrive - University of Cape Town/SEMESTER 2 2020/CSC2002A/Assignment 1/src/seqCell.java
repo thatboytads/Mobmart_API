@@ -47,7 +47,7 @@ public class seqCell {
             row= Integer.parseInt(lineSplit[1]) ;
             textGrid= new Float[col][row];
             vals= new Float[col*row];
-            textGridOut= new String[col];
+            textGridOut= new String[col*row];
 
 
 

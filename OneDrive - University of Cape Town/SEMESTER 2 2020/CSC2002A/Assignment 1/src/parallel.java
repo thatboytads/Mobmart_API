@@ -3,7 +3,7 @@ import java.util.concurrent.RecursiveTask;
 import java.lang.Math;
 
 public class parallel extends RecursiveTask<String []> {
-    private final int seqThreshold = 512;
+    private final int seqThreshold = 256;
     private int valsOut= 0;
     static  String []textGridFinal;
     private Float[][] data;

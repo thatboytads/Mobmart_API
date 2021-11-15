@@ -65,7 +65,7 @@ public class parCell {
             textGrid= new Float[col][row];
 
             basinGridOut= new String[col];
-            basinGridPara= new String[col];
+            basinGridPara= new String[col*row];
 
 
 
